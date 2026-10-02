@@ -41,9 +41,9 @@ namespace MoviesApp.Controllers
             try
             {
                 MovieReadDto result = await _movieService.GetById(id);
-                return Ok(result);  
+                return Ok(result);
             }
-            catch(NotFoundException ex)
+            catch (NotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -52,7 +52,7 @@ namespace MoviesApp.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
             }
-           
+
         }
 
         [HttpPost]
@@ -61,11 +61,11 @@ namespace MoviesApp.Controllers
             try
             {
                 MovieReadDto readDto = await _movieService.CreateAsync(createDto);
-            
-                return CreatedAtAction(nameof(GetById),new { id = readDto.Id },readDto);
+
+                return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
 
             }
-            catch ( BadRequestException ex)
+            catch (BadRequestException ex)
             {
 
                 return BadRequest(ex.Message);
@@ -76,9 +76,9 @@ namespace MoviesApp.Controllers
             }
         }
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
 
-        public async Task<IActionResult> Update([FromBody] int id, MovieUpdateDto updateDto)
+        public async Task<IActionResult> Update(int id, MovieUpdateDto updateDto)
         {
             try
             {
@@ -99,8 +99,32 @@ namespace MoviesApp.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _movieService.DeleteMovieAsync(id);
 
-        
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
+            }
+        }
+
+
+
+
 
 
     }

@@ -39,7 +39,7 @@ namespace MoviesApp.DateAccess.Implementaions
         {
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteAsynce(Actor actor)
+        public async Task DeleteAsync(Actor actor)
         {
             _context.Actors.Remove(actor);
             await _context.SaveChangesAsync();

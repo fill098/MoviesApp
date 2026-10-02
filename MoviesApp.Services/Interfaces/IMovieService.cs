@@ -8,5 +8,6 @@ namespace MoviesApp.Services.Interfaces
         Task<MovieReadDto> GetById(int id);
         Task<MovieReadDto> CreateAsync(MovieCreateDto createDto);
         Task UpdateAsync(int id, MovieUpdateDto updateDto);
+        Task DeleteMovieAsync(int id);
     }
 }

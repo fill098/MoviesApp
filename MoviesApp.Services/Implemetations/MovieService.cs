@@ -140,6 +140,20 @@ namespace MoviesApp.Services.Implemetations
             await _moveRepository.UpdateAsync(movieDb); 
         }
 
+
+        public async Task DeleteMovieAsync(int id)
+        {
+            var movieDb = await _moveRepository.GetByIdAsync(id);
+
+            if(movieDb is null)
+            {
+                throw new NotFoundException($"Movie with id {id} was not found.");
+            }
+
+            await _moveRepository.DeleteAsync(movieDb);
+        }
+
+
         #region Private helpers
         private async Task<Genre> GetValidGenreAsync(int genreId)
         {

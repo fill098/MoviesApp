@@ -36,7 +36,7 @@ namespace MoviesApp.DateAccess.Implementaions
         {
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteAsynce(Genre genre)
+        public async Task DeleteAsync(Genre genre)
         {
             _context.Genres.Remove(genre);
             await _context.SaveChangesAsync();

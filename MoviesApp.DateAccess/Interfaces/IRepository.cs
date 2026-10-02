@@ -9,7 +9,7 @@ namespace MoviesApp.DateAccess.Interfaces
         Task<T?> GetByIdAsync(int id);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
-        Task DeleteAsynce(T entity);
+        Task DeleteAsync(T entity);
 
     }
 }

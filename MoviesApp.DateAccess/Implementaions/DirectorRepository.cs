@@ -36,7 +36,7 @@ namespace MoviesApp.DateAccess.Implementaions
         {
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteAsynce(Director entity)
+        public async Task DeleteAsync(Director entity)
         {
             _context.Directors.Remove(entity);
             await _context.SaveChangesAsync();
