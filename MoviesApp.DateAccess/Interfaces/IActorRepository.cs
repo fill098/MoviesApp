@@ -4,5 +4,6 @@ namespace MoviesApp.DateAccess.Interfaces
 {
     public interface IActorRepository : IRepository<Actor>
     {
+        Task<List<Actor>> GetByIdsAsync(List<int> ids);
     }
 }

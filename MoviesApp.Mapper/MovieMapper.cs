@@ -1,4 +1,5 @@
 ﻿using MoviesApp.Domain.Domain;
+using MoviesApp.Domain.Models;
 using MoviesApp.Dto.Dto;
 
 namespace MoviesApp.Mapper
@@ -23,6 +24,19 @@ namespace MoviesApp.Mapper
             };
 
             return movieReadDto;
+        }
+
+        public static void ApplyTo(this MovieUpdateDto updateDto, Movie existingMovie, Genre genre, Director? director, List<Actor> actors)
+        {
+            existingMovie.Title = updateDto.Title;
+            existingMovie.Description = updateDto.Description;
+            existingMovie.Year = updateDto.Year;
+            existingMovie.DurationMinutes = updateDto.DurationMinutes;
+            existingMovie.GenreId = updateDto.GenreId;
+            existingMovie.Genre = genre;
+            existingMovie.DirectorId = updateDto.DirectorId;
+            existingMovie.Director = director;
+            existingMovie.Actors = actors;
         }
     }
 }

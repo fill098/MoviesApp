@@ -76,6 +76,29 @@ namespace MoviesApp.Controllers
             }
         }
 
+        [HttpPost("{id}")]
+
+        public async Task<IActionResult> Update([FromBody] int id, MovieUpdateDto updateDto)
+        {
+            try
+            {
+                await _movieService.UpdateAsync(id, updateDto);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
+            }
+        }
+
 
         
 

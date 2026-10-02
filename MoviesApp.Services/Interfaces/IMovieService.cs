@@ -7,5 +7,6 @@ namespace MoviesApp.Services.Interfaces
         Task<List<MovieReadDto>> GetAllAsync(int? genreId = null, int? year = null, string? title = null);
         Task<MovieReadDto> GetById(int id);
         Task<MovieReadDto> CreateAsync(MovieCreateDto createDto);
+        Task UpdateAsync(int id, MovieUpdateDto updateDto);
     }
 }

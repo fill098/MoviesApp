@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore;
 using MoviesApp.DateAccess.Data;
 using MoviesApp.DateAccess.Interfaces;
 using MoviesApp.Domain.Domain;
@@ -43,6 +44,14 @@ namespace MoviesApp.DateAccess.Implementaions
             _context.Actors.Remove(actor);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<Actor>> GetByIdsAsync(List<int> ids)
+        {
+            return await _context.Actors
+                .Where(a => ids.Contains(a.Id))
+                .ToListAsync();
+        }
+
 
 
     }

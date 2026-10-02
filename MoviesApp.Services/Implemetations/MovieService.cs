@@ -5,6 +5,7 @@ using MoviesApp.DateAccess.Interfaces;
 using MoviesApp.Domain.Domain;
 using MoviesApp.Domain.Models;
 using MoviesApp.Dto.Dto;
+using MoviesApp.Mapper;
 using MoviesApp.Services.Interfaces;
 
 namespace MoviesApp.Services.Implemetations
@@ -42,8 +43,8 @@ namespace MoviesApp.Services.Implemetations
                 DurationMinutes = movie.DurationMinutes,
                 GenreName = movie.Genre.Name,
                 DirectorName = movie.Director != null
-                ? $"{movie.Director.FirstName} {movie.Director.LastName}" 
-                :"Unknown",
+                ? $"{movie.Director.FirstName} {movie.Director.LastName}"
+                : "Unknown",
                 ActorNames = movie.Actors.Where(movie => movie != null).Select(actor => actor.FirstName + " " + actor.LastName).ToList()
             }).ToList();
 
@@ -68,7 +69,7 @@ namespace MoviesApp.Services.Implemetations
 
         public async Task<MovieReadDto> CreateAsync(MovieCreateDto createDto)
         {
- 
+
             var gereIdResult = await _genreRepository.GetByIdAsync(createDto.GenreId);
 
             if (gereIdResult == null)
@@ -121,5 +122,59 @@ namespace MoviesApp.Services.Implemetations
             return movieReadDto;
         }
 
+        public async Task UpdateAsync(int id, MovieUpdateDto updateDto)
+        {
+            var movieDb = await _moveRepository.GetByIdAsync(id);
+
+            if (movieDb is null)
+            {
+                throw new NotFoundException($"Movie with id {id} dose not existes!");
+            }
+
+            Genre genre = await GetValidGenreAsync(updateDto.GenreId);
+            Director? director = await GetValidDirectorAsync(updateDto.DirectorId);
+            List<Actor> actors = await GetValidActorsAsync(updateDto.ActorsId);
+
+            updateDto.ApplyTo(movieDb, genre, director, actors);
+
+            await _moveRepository.UpdateAsync(movieDb); 
+        }
+
+        #region Private helpers
+        private async Task<Genre> GetValidGenreAsync(int genreId)
+        {
+            var genre = await _genreRepository.GetByIdAsync(genreId);
+            if (genre == null)
+            {
+                throw new BadRequestException($"There is no genre with id: {genreId}");
+            }
+            return genre;
+        }
+
+        private async Task<Director?> GetValidDirectorAsync(int? directorId)
+        {
+            if (!directorId.HasValue)
+            {
+                return null;
+            }
+
+            var director = await _directorRepository.GetByIdAsync(directorId.Value);
+            if (director == null)
+            {
+                throw new BadRequestException($"There is no movie director with id: {directorId.Value}");
+            }
+            return director;
+        }
+
+        private async Task<List<Actor>> GetValidActorsAsync(List<int> actorIds)
+        {
+            var actors = await _actorRepository.GetByIdsAsync(actorIds);
+            if (actors.Count != actorIds.Count)
+            {
+                throw new BadRequestException("One or more actor ids are invalid.");
+            }
+            return actors;
+        }
+        #endregion
     }
 }
