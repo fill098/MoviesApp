@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="MoviesApp.Common/MoviesApp.Common.csproj" Id="6325ad25-98a5-42b3-ab4f-9d494e303095" />
+  <Project Path="MoviesApp.DateAccess/MoviesApp.DateAccess.csproj" />
+  <Project Path="MoviesApp.Domain/MoviesApp.Domain.csproj" />
+  <Project Path="MoviesApp.Dto/MoviesApp.Dto.csproj" Id="da09de1e-62df-4777-bb32-2e8c60d8d1f7" />
+  <Project Path="MoviesApp.Mapper/MoviesApp.Mapper.csproj" Id="9a99b522-0e5e-4f29-8b7c-f1e225e764d2" />
+  <Project Path="MoviesApp.Services/MoviesApp.Services.csproj" Id="37c97a51-6e15-4b83-af04-07b7ed180a1e" />
+  <Project Path="MoviesApp/MoviesApp.csproj" />
+</Solution>
