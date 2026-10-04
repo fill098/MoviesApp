@@ -23,7 +23,7 @@ namespace MoviesApp.Controllers
         {
             try
             {
-                List<MovieReadDto> result = await _movieService.GetAllAsync(genreId, year, title);
+                List<MovieReadDto> result = await _movieService.GetAllMoviesAsync(genreId, year, title);
                 return Ok(result);
             }
             catch (Exception)
@@ -40,7 +40,7 @@ namespace MoviesApp.Controllers
 
             try
             {
-                MovieReadDto result = await _movieService.GetById(id);
+                MovieReadDto result = await _movieService.GetMovieById(id);
                 return Ok(result);
             }
             catch (NotFoundException ex)
@@ -60,7 +60,7 @@ namespace MoviesApp.Controllers
         {
             try
             {
-                MovieReadDto readDto = await _movieService.CreateAsync(createDto);
+                MovieReadDto readDto = await _movieService.CreateMovieAsync(createDto);
 
                 return CreatedAtAction(nameof(GetById), new { id = readDto.Id }, readDto);
 
@@ -82,7 +82,7 @@ namespace MoviesApp.Controllers
         {
             try
             {
-                await _movieService.UpdateAsync(id, updateDto);
+                await _movieService.UpdateMovieAsync(id, updateDto);
                 return NoContent();
             }
             catch (NotFoundException ex)

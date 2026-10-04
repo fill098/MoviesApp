@@ -30,7 +30,7 @@ namespace MoviesApp.Services.Implemetations
         }
 
 
-        public async Task<List<MovieReadDto>> GetAllAsync(int? genreId = null, int? year = null, string? title = null)
+        public async Task<List<MovieReadDto>> GetAllMoviesAsync(int? genreId = null, int? year = null, string? title = null)
         {
             var moviesDb = await _moveRepository.GetAllAsync(genreId, year, title);
 
@@ -51,7 +51,7 @@ namespace MoviesApp.Services.Implemetations
             return moviesDto;
         }
 
-        public async Task<MovieReadDto> GetById(int id)
+        public async Task<MovieReadDto> GetMovieById(int id)
         {
 
             var movieIdDb = await _moveRepository.GetByIdAsync(id);
@@ -67,7 +67,7 @@ namespace MoviesApp.Services.Implemetations
 
         }
 
-        public async Task<MovieReadDto> CreateAsync(MovieCreateDto createDto)
+        public async Task<MovieReadDto> CreateMovieAsync(MovieCreateDto createDto)
         {
 
             var gereIdResult = await _genreRepository.GetByIdAsync(createDto.GenreId);
@@ -122,7 +122,7 @@ namespace MoviesApp.Services.Implemetations
             return movieReadDto;
         }
 
-        public async Task UpdateAsync(int id, MovieUpdateDto updateDto)
+        public async Task UpdateMovieAsync(int id, MovieUpdateDto updateDto)
         {
             var movieDb = await _moveRepository.GetByIdAsync(id);
 
