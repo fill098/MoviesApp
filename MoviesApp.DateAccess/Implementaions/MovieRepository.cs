@@ -66,5 +66,10 @@ namespace MoviesApp.DateAccess.Implementaions
 
             return await query.ToListAsync();
         }
+
+        public async Task<bool> ExistsByGenreIdAsync(int genreId)
+        {
+            return await _context.Movies.AnyAsync(m => m.GenreId == genreId);
+        }
     }
 }

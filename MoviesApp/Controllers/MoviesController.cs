@@ -43,15 +43,15 @@ namespace MoviesApp.Controllers
                 MovieReadDto result = await _movieService.GetMovieById(id);
                 return Ok(result);
             }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-            catch (Exception)
-            {
+                catch (NotFoundException ex)
+                {
+                    return NotFound(ex.Message);
+                }
+                catch (Exception)
+                {
 
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
-            }
+                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
+                }
 
         }
 
@@ -121,11 +121,5 @@ namespace MoviesApp.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
             }
         }
-
-
-
-
-
-
     }
 }

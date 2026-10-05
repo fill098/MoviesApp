@@ -41,5 +41,11 @@ namespace MoviesApp.DateAccess.Implementaions
             _context.Genres.Remove(genre);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Genre?> GetByNameAsync(string name)
+        {
+           return await 
+                _context.Genres.FirstOrDefaultAsync(g => g.Name == name);
+        }
     }
 }
