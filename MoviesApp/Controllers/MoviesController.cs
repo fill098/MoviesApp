@@ -40,18 +40,18 @@ namespace MoviesApp.Controllers
 
             try
             {
-                MovieReadDto result = await _movieService.GetMovieById(id);
+                MovieReadDto result = await _movieService.GetMovieByIdAsync(id);
                 return Ok(result);
             }
-                catch (NotFoundException ex)
-                {
-                    return NotFound(ex.Message);
-                }
-                catch (Exception)
-                {
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
 
-                    return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
-                }
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
+            }
 
         }
 
@@ -115,6 +115,50 @@ namespace MoviesApp.Controllers
             catch (BadRequestException ex)
             {
                 return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
+            }
+        }
+
+        [HttpPost("{movieId}/actors/{actorId}")]
+
+        public async Task<ActionResult> AddActorToMovie(int movieId, int actorId)
+        {
+            try
+            {
+                await _movieService.AddActorToMovieAsync(movieId, actorId);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+
+                return NotFound(ex.Message);
+            }
+            catch (ConflictException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred, please contact the administrator.");
+            }
+        }
+
+        [HttpDelete("{movieId}/actors/{actorId}")]
+
+        public async Task<ActionResult> DeleteActorToMovie(int movieId, int actorId)
+        {
+            try
+            {
+                await _movieService.DeleteActorToMovieAsync(movieId, actorId);
+                return NoContent();
+            }
+            catch (NotFoundException ex)
+            {
+
+                return NotFound(ex.Message);
             }
             catch (Exception)
             {

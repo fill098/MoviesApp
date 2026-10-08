@@ -30,7 +30,7 @@ namespace MoviesApp.Controllers
             }   
         }
 
-        [HttpGet("id:int")]
+        [HttpGet("{id:int}")]
 
         public async Task<ActionResult<GenreReadDto>> GetById(int id)
         {

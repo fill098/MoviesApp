@@ -6,10 +6,15 @@ namespace MoviesApp.Mapper
 {
     public static class MovieMapper
     {
-        
-        public static MovieReadDto ToMovieReadDto(Movie movie)
+        public static List<MovieReadDto> ToMoviesReadDtoList(this List<Movie> movies)
         {
-            var movieReadDto = new MovieReadDto
+            Func<Movie, MovieReadDto> movieDtoMapper = movie => movie.ToMovieReadDto();
+            return movies.Select(movieDtoMapper).ToList();
+        }
+        
+        public static MovieReadDto ToMovieReadDto(this Movie movie)
+        {
+            return new MovieReadDto
             {
                 Id = movie.Id,
                 Title = movie.Title,
@@ -22,8 +27,6 @@ namespace MoviesApp.Mapper
                 : "Unknown",
                 ActorNames = movie.Actors.Where(movie => movie != null).Select(actor => actor.FirstName + " " + actor.LastName).ToList()
             };
-
-            return movieReadDto;
         }
 
         public static void ApplyTo(this MovieUpdateDto updateDto, Movie existingMovie, Genre genre, Director? director, List<Actor> actors)

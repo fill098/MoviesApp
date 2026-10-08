@@ -52,7 +52,16 @@ namespace MoviesApp.DateAccess.Implementaions
                 .ToListAsync();
         }
 
+        public async Task<List<Actor>> GetAllAsync(int? movieId)
+        {
+            IQueryable<Actor> query = _context.Actors.Include(a => a.Movies);
 
+            if (movieId.HasValue)
+            {
+                query = query.Where(a => a.Movies.Any(m => m.Id == movieId.Value));
+            }
 
+            return await query.ToListAsync();
+        }
     }
 }

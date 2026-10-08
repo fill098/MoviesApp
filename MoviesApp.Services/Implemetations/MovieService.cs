@@ -16,7 +16,6 @@ namespace MoviesApp.Services.Implemetations
         private readonly IActorRepository _actorRepository;
         private readonly IDirectorRepository _directorRepository;
         private readonly IGenreRepository _genreRepository;
-
         public MovieService(
             IMovieRepository movieRepository,
             IActorRepository actorRepository,
@@ -28,48 +27,30 @@ namespace MoviesApp.Services.Implemetations
             _directorRepository = directorRepository;
             _genreRepository = genreRepository;
         }
-
-
         public async Task<List<MovieReadDto>> GetAllMoviesAsync(int? genreId = null, int? year = null, string? title = null)
         {
-            var moviesDb = await _moveRepository.GetAllAsync(genreId, year, title);
+            List<Movie> moviesDb = await _moveRepository.GetAllAsync(genreId, year, title);
 
-            List<MovieReadDto> moviesDto = moviesDb.Select(movie => new MovieReadDto
-            {
-                Id = movie.Id,
-                Title = movie.Title,
-                Description = movie.Description,
-                Year = movie.Year,
-                DurationMinutes = movie.DurationMinutes,
-                GenreName = movie.Genre.Name,
-                DirectorName = movie.Director != null
-                ? $"{movie.Director.FirstName} {movie.Director.LastName}"
-                : "Unknown",
-                ActorNames = movie.Actors.Where(movie => movie != null).Select(actor => actor.FirstName + " " + actor.LastName).ToList()
-            }).ToList();
+            List<MovieReadDto> moviesDto = moviesDb.ToMoviesReadDtoList();
 
             return moviesDto;
         }
-
-        public async Task<MovieReadDto> GetMovieById(int id)
+        public async Task<MovieReadDto> GetMovieByIdAsync(int id)
         {
-
-            var movieIdDb = await _moveRepository.GetByIdAsync(id);
+            Movie movieIdDb = await _moveRepository.GetByIdAsync(id);
 
             if (movieIdDb == null)
             {
                 throw new NotFoundException($"Movie with id {id} was not found.");
             }
 
-            var movieReadDto = Mapper.MovieMapper.ToMovieReadDto(movieIdDb);
+            MovieReadDto movieReadDto = Mapper.MovieMapper.ToMovieReadDto(movieIdDb);
 
             return movieReadDto;
-
         }
 
         public async Task<MovieReadDto> CreateMovieAsync(MovieCreateDto createDto)
         {
-
             var gereIdResult = await _genreRepository.GetByIdAsync(createDto.GenreId);
 
             if (gereIdResult == null)
@@ -88,6 +69,7 @@ namespace MoviesApp.Services.Implemetations
             }
 
             List<Actor> validatedActors = new List<Actor>();
+
             foreach (int actorId in createDto.ActorsId)
             {
                 var actorResult = await _actorRepository.GetByIdAsync(actorId);
@@ -103,7 +85,6 @@ namespace MoviesApp.Services.Implemetations
                 throw new BadRequestException($"The film can not be created in the future: {createDto.Year}");
             }
 
-
             var movie = new Movie
             {
                 Title = createDto.Title,
@@ -117,7 +98,7 @@ namespace MoviesApp.Services.Implemetations
 
             await _moveRepository.AddAsync(movie);
 
-            var movieReadDto = Mapper.MovieMapper.ToMovieReadDto(movie);
+            var movieReadDto = movie.ToMovieReadDto();
 
             return movieReadDto;
         }
@@ -152,6 +133,62 @@ namespace MoviesApp.Services.Implemetations
 
             await _moveRepository.DeleteAsync(movieDb);
         }
+
+        public async Task AddActorToMovieAsync(int movieId, int actorId)
+        {
+            var movieDb = await _moveRepository.GetByIdAsync(movieId);
+            var actorDb = await _actorRepository.GetByIdAsync(actorId);
+
+            if(movieDb is null)
+            {
+                throw new NotFoundException($"Movie with id: {movieId} was not found.");
+            }
+
+            if (actorDb is null)
+            {
+                throw new NotFoundException($"Actor with id: {actorId} was not found.");
+            }
+
+            var isLinkedActor = movieDb.Actors.Any(x => x.Id == actorId);
+
+            if (isLinkedActor)
+            {
+                throw new ConflictException($"The actor with id: {actorId} is alrady cast in the movie with id: {movieId}");
+            }
+
+            movieDb.Actors.Add(actorDb);
+
+            await _moveRepository.UpdateAsync(movieDb);
+
+        }
+        public async Task DeleteActorToMovieAsync(int movieId, int actorId)
+        {
+            var movieDb = await _moveRepository.GetByIdAsync(movieId);
+            var actorDb = await _actorRepository.GetByIdAsync(actorId);
+
+            if (movieDb is null)
+            {
+                throw new NotFoundException($"Movie with id: {movieId} was not found.");
+            }
+
+            if (actorDb is null)
+            {
+                throw new NotFoundException($"Actor with id: {actorId} was not found.");
+            }
+
+            var isLinkedActor = movieDb.Actors.Any(x => x.Id == actorId);
+
+            if (!isLinkedActor)
+            {
+                throw new NotFoundException($"There is no actor with the id: {actorId} in the movie with id: {movieId}");
+            }
+
+            movieDb.Actors.Remove(actorDb);
+            await _moveRepository.UpdateAsync(movieDb);
+
+        }
+
+      
 
 
         #region Private helpers
@@ -189,6 +226,8 @@ namespace MoviesApp.Services.Implemetations
             }
             return actors;
         }
+
+
         #endregion
     }
 }

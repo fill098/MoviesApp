@@ -23,9 +23,9 @@ namespace MoviesApp.DateAccess.Implementaions
 
             return await movies.ToListAsync();
         }
-        public Task<Movie?> GetByIdAsync(int id)
+        public async Task<Movie?> GetByIdAsync(int id)
         {
-            return _context.Movies
+            return await _context.Movies
                 .Include(g => g.Genre)
                 .Include(d => d.Director)
                 .Include(a => a.Actors)
